@@ -9,14 +9,14 @@ using namespace std;
 
 void get_URL( const string& host, const string& path )
 {
-  cerr << "Your Host is: " << host << ", visit path is : " << path << "\n";
+  clog << "Your Host is: " << host << ", visit path is : " << path << "\n";
   // find the host address
   Address hostAddress = Address(host, "http");
-  cerr << "building socket ...\n";
+  clog << "building socket ...\n";
   // try to build a TCP socket
   TCPSocket socket = TCPSocket();
   socket.connect(hostAddress); // connect to host address
-  cerr << "local_address: " << socket.local_address().to_string() <<
+  clog << "local_address: " << socket.local_address().to_string() <<
           "\npeer_address: " << socket.peer_address().to_string() << "\n";
   // begin to write
   string str1 = "GET " + path + " HTTP/1.1\r\n";
