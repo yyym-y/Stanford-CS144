@@ -1,65 +1,68 @@
 #include "byte_stream.hh"
+#include <stdexcept>
+#include <iostream>
 
 using namespace std;
 
-ByteStream::ByteStream( uint64_t capacity ) : capacity_( capacity ) {}
+ByteStream::ByteStream( uint64_t capacity ) : capacity_( capacity ) , buf() {}
 
-bool Writer::is_closed() const
-{
-  // Your code here.
-  return {};
+void ByteStream::writeString(std::string str, size_t len) {
+  for(size_t i = 0 ; i < len ; i ++)
+    buf.push(str[i]);
 }
 
-void Writer::push( string data )
-{
-  // Your code here.
-  (void)data;
-  return;
+bool Writer::is_closed() const {
+  return isClosed_;
 }
 
-void Writer::close()
-{
-  // Your code here.
+void Writer::push( string data ) {
+  uint64_t data_len = (uint64_t)data.size();
+  uint64_t avail = available_capacity();
+  if (avail < data_len) {
+    writeString(data, avail);
+    write_flow += avail;
+    return;
+  }
+  writeString(data, data_len);
+  write_flow += data_len;
 }
 
-uint64_t Writer::available_capacity() const
-{
-  // Your code here.
-  return {};
+void Writer::close() {
+  isClosed_ = true;
 }
 
-uint64_t Writer::bytes_pushed() const
-{
-  // Your code here.
-  return {};
+uint64_t Writer::available_capacity() const {
+  uint64_t nowLen = (uint64_t)buf.size();
+  return capacity_ - nowLen;
 }
 
-bool Reader::is_finished() const
-{
-  // Your code here.
-  return {};
+uint64_t Writer::bytes_pushed() const {
+  return write_flow;
 }
 
-uint64_t Reader::bytes_popped() const
-{
-  // Your code here.
-  return {};
+bool Reader::is_finished() const {
+  return isClosed_ && buf.empty();
 }
 
-string_view Reader::peek() const
-{
-  // Your code here.
-  return {};
+uint64_t Reader::bytes_popped() const {
+  return read_flow;
 }
 
-void Reader::pop( uint64_t len )
-{
-  // Your code here.
-  (void)len;
+std::string Reader::peek() const {
+  char ch = buf.front();
+  std::string str(1, ch);
+  return str;
 }
 
-uint64_t Reader::bytes_buffered() const
-{
-  // Your code here.
-  return {};
+void Reader::pop( uint64_t len ) {
+  if(len > bytes_buffered()) {
+    throw std::runtime_error( "pop len larger than buffer contain" );
+  }
+  for(uint64_t i = 0 ; i < len ; i ++)
+    buf.pop();
+  read_flow += len;
+}
+
+uint64_t Reader::bytes_buffered() const {
+  return buf.size();
 }

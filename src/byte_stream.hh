@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <string>
+#include <queue>
 #include <string_view>
 
 class Reader;
@@ -25,6 +26,13 @@ protected:
   // Please add any additional state to the ByteStream here, and not to the Writer and Reader interfaces.
   uint64_t capacity_;
   bool error_ {};
+
+  std::queue<char> buf;
+  bool isClosed_ = false;
+  uint64_t write_flow = 0;
+  uint64_t read_flow = 0;
+
+  void writeString(std::string str, size_t len);
 };
 
 class Writer : public ByteStream
@@ -41,7 +49,7 @@ public:
 class Reader : public ByteStream
 {
 public:
-  std::string_view peek() const; // Peek at the next bytes in the buffer
+  std::string peek() const; // Peek at the next bytes in the buffer
   void pop( uint64_t len );      // Remove `len` bytes from the buffer
 
   bool is_finished() const;        // Is the stream finished (closed and fully popped)?
