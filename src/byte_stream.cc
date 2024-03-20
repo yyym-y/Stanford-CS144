@@ -48,10 +48,8 @@ uint64_t Reader::bytes_popped() const {
   return read_flow;
 }
 
-std::string Reader::peek() const {
-  char ch = buf.front();
-  std::string str(1, ch);
-  return str;
+std::string_view Reader::peek() const {
+  return {std::string_view(&buf.front(), 1)};
 }
 
 void Reader::pop( uint64_t len ) {
