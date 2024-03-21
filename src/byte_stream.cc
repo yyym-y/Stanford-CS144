@@ -27,6 +27,11 @@ void Writer::push( string data ) {
   write_flow += data_len;
 }
 
+void Writer::push( char ch ) {
+  std::string str(1, ch);
+  push(str);
+}
+
 void Writer::close() {
   isClosed_ = true;
 }

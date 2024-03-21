@@ -1,12 +1,16 @@
 #pragma once
 
 #include "byte_stream.hh"
+#include <string>
+#include <queue>
+#include <utility>
+#include <list>
 
 class Reassembler
 {
 public:
   // Construct Reassembler to write into given ByteStream.
-  explicit Reassembler( ByteStream&& output ) : output_( std::move( output ) ) {}
+  explicit Reassembler( ByteStream&& output ) : cache() , output_( std::move( output ) ) {}
 
   /*
    * Insert a new substring to be reassembled into a ByteStream.
@@ -40,6 +44,15 @@ public:
   // Access output stream writer, but const-only (can't write from outside)
   const Writer& writer() const { return output_.writer(); }
 
+  std::list<std::pair<uint64_t, std::string> > cache;
+  uint64_t need_pos = 0;
+  uint64_t pend_size = 0;
+  bool if_end = false;
+  uint64_t end_pos = 0;
+
 private:
   ByteStream output_; // the Reassembler writes to this ByteStream
+
+  void cutString( uint64_t& first_index, std::string& data );
+  void mergeString( uint64_t first_index, std::string& data );
 };
