@@ -1,0 +1,93 @@
+[ 17%] Built target util_debug
+[ 17%] Building CXX object src/CMakeFiles/minnow_debug.dir/tcp_sender.cc.o
+[ 17%] Built target minnow_testing_debug
+[ 21%] Built target stream_copy
+[ 25%] Built target stream_sanitized
+[ 42%] Built target util_sanitized
+[ 46%] Building CXX object src/CMakeFiles/minnow_sanitized.dir/tcp_sender.cc.o
+[ 17%] Built target util_debug
+[ 17%] Building CXX object src/CMakeFiles/minnow_debug.dir/tcp_sender.cc.o
+[ 17%] Built target minnow_testing_debug
+[ 21%] Built target stream_copy
+[ 25%] Built target stream_sanitized
+[ 42%] Built target util_sanitized
+[ 46%] Building CXX object src/CMakeFiles/minnow_sanitized.dir/tcp_sender.cc.o
+[ 17%] Built target util_debug
+[ 17%] Building CXX object src/CMakeFiles/minnow_debug.dir/tcp_sender.cc.o
+[ 17%] Built target minnow_testing_debug
+[ 21%] Built target stream_copy
+[ 25%] Built target stream_sanitized
+[ 42%] Built target util_sanitized
+[ 46%] Building CXX object src/CMakeFiles/minnow_sanitized.dir/tcp_sender.cc.o
+[  0%] Building CXX object src/CMakeFiles/minnow_debug.dir/tcp_sender.cc.o
+[ 17%] Built target util_debug
+[ 17%] Built target minnow_testing_debug
+[ 21%] Built target stream_copy
+[ 25%] Built target stream_sanitized
+[ 42%] Built target util_sanitized
+[ 46%] Building CXX object src/CMakeFiles/minnow_sanitized.dir/tcp_sender.cc.o
+[ 17%] Built target util_debug
+[ 17%] Building CXX object src/CMakeFiles/minnow_debug.dir/tcp_sender.cc.o
+[ 17%] Built target minnow_testing_debug
+[ 21%] Built target stream_copy
+[ 25%] Built target stream_sanitized
+[ 42%] Built target util_sanitized
+[ 46%] Building CXX object src/CMakeFiles/minnow_sanitized.dir/tcp_sender.cc.o
+[ 17%] Built target util_debug
+[ 17%] Building CXX object src/CMakeFiles/minnow_debug.dir/tcp_sender.cc.o
+[ 17%] Built target minnow_testing_debug
+[ 21%] Built target stream_copy
+[ 25%] Built target stream_sanitized
+[ 42%] Built target util_sanitized
+[ 46%] Building CXX object src/CMakeFiles/minnow_sanitized.dir/tcp_sender.cc.o
+[ 46%] Linking CXX static library libminnow_debug.a
+[ 60%] Built target minnow_debug
+[ 60%] Linking CXX executable webget
+[ 64%] Built target webget
+[ 67%] Linking CXX executable tcp_native
+[ 71%] Linking CXX static library libminnow_sanitized.a
+[ 71%] Built target tcp_native
+[ 82%] Built target minnow_sanitized
+[ 85%] Building CXX object apps/CMakeFiles/tcp_ipv4.dir/tcp_ipv4.cc.o
+[ 85%] Building CXX object apps/CMakeFiles/endtoend.dir/endtoend.cc.o
+[ 85%] Linking CXX executable tcp_ipv4
+[ 85%] Built target tcp_ipv4
+[ 89%] Building CXX object apps/CMakeFiles/endtoend_sanitized.dir/endtoend.cc.o
+[ 89%] Linking CXX executable endtoend
+[ 89%] Built target endtoend
+[ 89%] Linking CXX executable webget_sanitized
+[ 92%] Built target webget_sanitized
+[ 96%] Linking CXX executable tcp_native_sanitized
+[ 96%] Built target tcp_native_sanitized
+[ 96%] Building CXX object apps/CMakeFiles/tcp_ipv4_sanitized.dir/tcp_ipv4.cc.o
+[100%] Linking CXX executable tcp_ipv4_sanitized
+[100%] Built target tcp_ipv4_sanitized
+[100%] Linking CXX executable endtoend_sanitized
+[100%] Built target endtoend_sanitized
+[ 17%] Built target util_debug
+[ 17%] Building CXX object src/CMakeFiles/minnow_debug.dir/tcp_sender.cc.o
+[ 17%] Built target minnow_testing_debug
+[ 21%] Built target stream_copy
+[ 25%] Built target stream_sanitized
+[ 42%] Built target util_sanitized
+[ 46%] Building CXX object src/CMakeFiles/minnow_sanitized.dir/tcp_sender.cc.o
+[ 46%] Linking CXX static library libminnow_debug.a
+[ 60%] Built target minnow_debug
+[ 60%] Linking CXX executable webget
+[ 64%] Built target webget
+[ 67%] Linking CXX executable tcp_native
+[ 71%] Linking CXX static library libminnow_sanitized.a
+[ 71%] Built target tcp_native
+[ 82%] Built target minnow_sanitized
+[ 82%] Linking CXX executable tcp_ipv4
+[ 82%] Linking CXX executable endtoend
+[ 82%] Built target endtoend
+[ 85%] Built target tcp_ipv4
+[ 85%] Linking CXX executable endtoend_sanitized
+[ 85%] Linking CXX executable webget_sanitized
+[ 89%] Built target webget_sanitized
+[ 92%] Linking CXX executable tcp_native_sanitized
+[ 96%] Built target endtoend_sanitized
+[100%] Linking CXX executable tcp_ipv4_sanitized
+[100%] Built target tcp_native_sanitized
+[100%] Built target tcp_ipv4_sanitized
