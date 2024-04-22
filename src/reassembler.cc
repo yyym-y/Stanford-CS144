@@ -17,11 +17,9 @@ void Reassembler::insert( uint64_t first_index, string data, bool is_last_substr
 
   cutString(first_index, data);
   if(data == "") return;
-  cout << "split data: " << data << "\n";
 
   mergeString(first_index, data);
 
-  cout << (*cache.begin()).first << " " << (*cache.begin()).second << " " << pend_size << "\n";
 
   if((*cache.begin()).first == need_pos) {
     uint64_t begin = (*cache.begin()).first;
