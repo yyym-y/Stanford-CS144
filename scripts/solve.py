@@ -1,5 +1,7 @@
 import util as cc
-
+import matplotlib.pyplot as plt
+import numpy as np
+import math
 
 def count_sent_num( p_info ):
     Len = len(p_info.replys)
@@ -58,12 +60,52 @@ def print_longest_loss( p_info ):
     
     print("longest burst of lose is: [" + str(beg_left) + ", " + str(end_right) + "], len is " + str(max_len))
 
+def paint_RTT_with_T( p_info ) :
+    time, rtt = [], []
+    t = -0.2
+    for pr in p_info.replys:
+        rtt.append( pr.time )
+        t += 0.2
+        time.append( t )
+    plt.figure(figsize=(12,6), dpi=80)
+    use = plt.gca()
+    use.plot(time, rtt)
+    plt.title("The value of RTT in different time")
+    plt.show() 
 
+def paint_RTT_with_proportion( p_info ):
+    rtt_count = {}
+    for pr in p_info.replys:
+        if str(pr.time) not in rtt_count:
+            rtt_count[str(pr.time)] = 1
+            continue
+        rtt_count[str(pr.time)] += 1
+    total = len(p_info.replys)
+    proportion, rtt = [], []
+    for rtt_, count_ in rtt_count.items():
+        rtt.append(rtt_)
+        proportion.append((count_ / total) * 100)
+    plt.figure(figsize=(12, 6), dpi=80)
+    # use = plt.gca()
+    plt.plot(rtt, proportion)
+    tem_x = []
+    for i in range (0, len(rtt), 30):
+        tem_x.append(rtt[i])
+    plt.title(" distribution of RTTs observed")
+    plt.xticks(tem_x)
+    plt.show()
 
-if __name__ == "__main__":
-    # data[www.canterbury.ac.nz].txt
-    # data[162.105.253.58].txt
-    # data[41.186.255.86].txt
+def paint_N_N_plus_1( p_info ) :
+    x, y = [], []
+    for i in range(len(p_info.replys) - 1):
+        x.append(p_info.replys[i].time)
+        y.append(p_info.replys[i + 1].time)
+    plt.figure(figsize=(12, 6), dpi=80)
+    plt.title("RTT of ping #N” and “RTT of ping #N+1")
+    plt.scatter(x, y, 7)
+    plt.show()
+
+def show_info( file_name ):
     file = cc.PingInfo("data[41.186.255.86].txt")
     print("fileName = " + str(file.file_name))
     sent_num, lost_num = count_sent_num(file), count_lose_num(file)
@@ -74,3 +116,19 @@ if __name__ == "__main__":
     print("---------------------------------")
     print_longest_receive( file )
     print_longest_loss( file )
+    paint_RTT_with_T( file )
+    paint_RTT_with_proportion( file )
+    paint_N_N_plus_1( file )
+    print("\n\n\n\n")
+
+    
+
+
+
+if __name__ == "__main__":
+    # data[www.canterbury.ac.nz].txt
+    # data[162.105.253.58].txt
+    # data[41.186.255.86].txt
+    show_info("data[www.canterbury.ac.nz].txt")
+    show_info("data[162.105.253.58].txt")
+    show_info("data[41.186.255.86].txt")
