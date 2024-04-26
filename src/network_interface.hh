@@ -5,6 +5,21 @@
 #include "address.hh"
 #include "ethernet_frame.hh"
 #include "ipv4_datagram.hh"
+#include "arp_message.hh"
+#include <unordered_map>
+
+class ARPTimer {
+  static constexpr uint16_t WAITING = 1;
+  static constexpr uint16_t CONFIRM = 2;
+  
+  uint16_t status = ARPTimer::WAITING;
+  uint64_t last_tick {};
+public:
+  bool if_MAC_useful( uint64_t now_tick );
+  bool if_can_send_ARP( uint64_t now_tick );
+  ARPTimer& confirm();
+  ARPTimer& setTick( uint64_t now_tick );
+};
 
 // A "network interface" that connects IP (the internet layer, or network layer)
 // with Ethernet (the network access layer, or link layer).
@@ -72,6 +87,13 @@ private:
   // The physical output port (+ a helper function `transmit` that uses it to send an Ethernet frame)
   std::shared_ptr<OutputPort> port_;
   void transmit( const EthernetFrame& frame ) const { port_->transmit( *this, frame ); }
+  
+  ARPMessage build_ARP_msg( uint16_t opcode, uint32_t target_ip );
+  ARPMessage build_ARP_msg( uint16_t opcode, uint32_t ori_ip, EthernetAddress ori_mac );
+  void send_ARP_msg( ARPMessage msg, EthernetAddress dst );
+  void send_data_msg( const InternetDatagram& dgram, EthernetAddress mac_address );
+  void send_buf_datagram(  uint32_t ip_address, EthernetAddress mac_address ); 
+
 
   // Ethernet (known as hardware, network-access-layer, or link-layer) address of the interface
   EthernetAddress ethernet_address_;
@@ -81,4 +103,13 @@ private:
 
   // Datagrams that have been received
   std::queue<InternetDatagram> datagrams_received_ {};
+
+  // ARP_TABLE
+  std::unordered_map<uint32_t, EthernetAddress> ARP_table_ {};
+  // BUFFER
+  std::unordered_map<uint32_t, std::queue<InternetDatagram> > buffer_ {};
+  // ARP_TIMER
+  std::unordered_map<uint32_t, ARPTimer> time_control_ {};
+
+  uint64_t now_tick_ {};
 };
