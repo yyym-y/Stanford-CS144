@@ -28,7 +28,6 @@ NetworkInterface::NetworkInterface( string_view name,
 void NetworkInterface::send_datagram( const InternetDatagram& dgram, const Address& next_hop )
 {
   uint32_t next_ip_addr = next_hop.ipv4_numeric();
-  cout << ARP_table_.count( next_ip_addr ) << "---\n";
   if(time_control_.count( next_ip_addr ))
     cout << time_control_[next_ip_addr].if_MAC_useful( now_tick_ ) << "---~~~\n";
   if( ARP_table_.count( next_ip_addr ) && 

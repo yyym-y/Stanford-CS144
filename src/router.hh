@@ -6,6 +6,38 @@
 #include "exception.hh"
 #include "network_interface.hh"
 
+class RouteItem {
+public:
+  uint32_t prefix_ {};
+  uint8_t prefix_length_ {};
+  std::optional<Address> next_hop_ {};
+  size_t interface_num_ {};
+  RouteItem( uint32_t route_prefix, uint8_t prefix_length, 
+              std::optional<Address> next_hop, size_t interface_num ) 
+    : prefix_( route_prefix ), prefix_length_( prefix_length ),
+      next_hop_( next_hop ), interface_num_( interface_num ) {};
+  RouteItem& operator=( const RouteItem& other );
+  RouteItem() {};
+};
+
+class RouteTable {
+private:
+  class TreeNode {
+  public:
+    bool is_item {};
+    uint16_t _pos[2] {};
+    std::optional<RouteItem> item {};
+    bool is_leaf() { return !_pos[0] && !_pos[1]; }
+  };
+  std::vector<TreeNode> tree_ {};
+  uint32_t pos = 0;
+public:
+  RouteTable() { tree_.push_back( TreeNode() ); };
+  void addItem( uint32_t route_prefix, uint8_t prefix_length,
+                std::optional<Address> next_hop, size_t interface_num );
+  bool queryItem( RouteItem& result, uint32_t des_ip );
+};
+
 // \brief A router that has multiple network interfaces and
 // performs longest-prefix-match routing between them.
 class Router
@@ -35,4 +67,6 @@ public:
 private:
   // The router's collection of network interfaces
   std::vector<std::shared_ptr<NetworkInterface>> _interfaces {};
+
+  RouteTable table_ {};
 };
