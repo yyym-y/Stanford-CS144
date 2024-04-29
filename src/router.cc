@@ -21,81 +21,40 @@ void Router::add_route( const uint32_t route_prefix,
        << static_cast<int>( prefix_length ) << " => " << ( next_hop.has_value() ? next_hop->ip() : "(direct)" )
        << " on interface " << interface_num << "\n";
 
-  table_.addItem( route_prefix, prefix_length, next_hop, interface_num );
+  router_table_.emplace( prefix_info( prefix_length, route_prefix ), make_pair( interface_num, next_hop ) );
 }
 
 // Go through all the interfaces, and route every incoming datagram to its proper outgoing interface.
 void Router::route()
 {
-  cout << "ROUTE ----\n";
   ranges::for_each( _interfaces, [this]( auto& intfc ) {
     auto& incoming_dgrams = intfc->datagrams_received();
     while ( !incoming_dgrams.empty() ) {
-      InternetDatagram& datagram = incoming_dgrams.front();
-      incoming_dgrams.pop();
-      uint32_t dst = datagram.header.dst;
-      cout << "route dst = " << dst << "--\n";
-      RouteItem result;
-      if ( !table_.queryItem( result, dst ) )
-        continue;
-      if ( datagram.header.ttl <= 1 )
-        continue;
-      datagram.header.ttl --;
-      datagram.header.compute_checksum();
-      interface( result.interface_num_ )->send_datagram( datagram,
-        result.next_hop_.has_value() ?
-          *result.next_hop_ : Address::from_ipv4_numeric( datagram.header.dst )
-      );
+      auto& dgram = incoming_dgrams.front();
+      const auto table_iter = find_export( dgram.header.dst );
+      if ( table_iter == router_table_.cend() || dgram.header.ttl <= 1 ) {
+        incoming_dgrams.pop(); // TTL == 0 || (TTL - 1) == 0
+        continue;              // 无法路由或 ttl 为 0 的数据报直接抛弃
+      }
+      --dgram.header.ttl;
+      dgram.header.compute_checksum();
+      const auto& [interface_num, network_addr] = table_iter->second;
+
+      interface( interface_num )
+        ->send_datagram(
+          dgram,
+          network_addr.has_value()
+            ? *network_addr
+            : Address::from_ipv4_numeric( dgram.header.dst ) ); // 没有下一跳时，表示位于同一个网络中，直接交付
+      incoming_dgrams.pop();                                    // 已转发数据报，从缓冲队列中弹出
     }
-  });
+  } );
 }
 
-RouteItem& RouteItem::operator=( const RouteItem& other ) {
-  this->prefix_ = other.prefix_;
-  this->prefix_length_ = other.prefix_length_;
-  this->next_hop_ = other.next_hop_;
-  this->interface_num_ = other.interface_num_;
-  return *this;
-}
-
-void RouteTable::addItem( uint32_t route_prefix, uint8_t prefix_length, 
-                          std::optional<Address> next_hop, size_t interface_num ) {
-  uint32_t mask = 0xFFFFFFFF; int shift_len = 32 - prefix_length;
-  if( shift_len >= 32)
-    mask = 0;
-  else mask = mask >> shift_len << shift_len;
-  route_prefix &= mask;
-  RouteItem item = RouteItem( route_prefix, prefix_length, next_hop, interface_num );
-
-  uint32_t tem_pos = 0;
-  for( int i = 0, j = 31 ; i < prefix_length ; i ++, j -- ) {
-    int bit = route_prefix >> j & 1;
-    if( !tree_[tem_pos]._pos[bit] ) {
-      tree_[tem_pos]._pos[bit] = ++ pos;
-      tree_.push_back( TreeNode() );
-    }
-    tem_pos = tree_[tem_pos]._pos[bit];
-  }
-  tree_[tem_pos].is_item = true;
-  tree_[tem_pos].item = item;
-}
-
-bool RouteTable::queryItem( RouteItem& result, uint32_t des_ip ) {
-  cout << "des_ip" << des_ip << "----\n";
-  bool matched = false;
-  uint32_t tem_pos = 0;
-  for( int i = 0, j = 31 ; i < 32 && !tree_[tem_pos].is_leaf() ; i ++, j -- ) {
-    if ( tree_[tem_pos].is_item ) {
-      matched = true;
-      if ( !tree_[tem_pos].item.has_value() )
-        throw std::runtime_error("RouteTable[" + to_string(tem_pos) + "] is_item is true but item is null");
-      result = tree_[tem_pos].item.value();
-    }
-
-    int bit = des_ip >> j & 1;
-    if ( tree_[tem_pos]._pos[bit] == 0 )
-      break;
-    tem_pos = tree_[tem_pos]._pos[bit];
-  }
-  return matched;
+// 按最长前缀匹配找出最合适的路由表
+Router::routerT::const_iterator Router::find_export( const uint32_t target_dst ) const
+{
+  return ranges::find_if( router_table_, [&target_dst]( const auto& item ) -> bool {
+    return ( target_dst & item.first.mask_ ) == item.first.netID_;
+  } );
 }

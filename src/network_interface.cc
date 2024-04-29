@@ -28,8 +28,6 @@ NetworkInterface::NetworkInterface( string_view name,
 void NetworkInterface::send_datagram( const InternetDatagram& dgram, const Address& next_hop )
 {
   uint32_t next_ip_addr = next_hop.ipv4_numeric();
-  if(time_control_.count( next_ip_addr ))
-    cout << time_control_[next_ip_addr].if_MAC_useful( now_tick_ ) << "---~~~\n";
   if( ARP_table_.count( next_ip_addr ) && 
       time_control_[next_ip_addr].if_MAC_useful( now_tick_ ) ) {
 
@@ -39,8 +37,8 @@ void NetworkInterface::send_datagram( const InternetDatagram& dgram, const Addre
   if( time_control_.count( next_ip_addr ) && time_control_[next_ip_addr].if_can_send_ARP( now_tick_ ) )
     return;
   time_control_[next_ip_addr] = ARPTimer();
-  send_ARP_msg( build_ARP_msg( ARPMessage::OPCODE_REQUEST, next_ip_addr ), ETHERNET_BROADCAST);
   buffer_[next_ip_addr].push( dgram );
+  send_ARP_msg( build_ARP_msg( ARPMessage::OPCODE_REQUEST, next_ip_addr ), ETHERNET_BROADCAST);
 }
 
 //! \param[in] frame the incoming Ethernet frame
@@ -110,6 +108,7 @@ void NetworkInterface::send_data_msg( const InternetDatagram& dgram, EthernetAdd
     .header = header,
     .payload = serialize( dgram )
   };
+  cout << "------------------\n";
   transmit( frame );
 }
 
@@ -150,12 +149,15 @@ ARPMessage NetworkInterface::build_ARP_msg( uint16_t opcode, uint32_t ori_ip, Et
   return msg;
 }
 
-void NetworkInterface::send_buf_datagram( uint32_t ip_address, EthernetAddress mac_address ) {
-  if( !buffer_.count( ip_address ) )
+void NetworkInterface::send_buf_datagram( uint32_t ip_address_t, EthernetAddress mac_address ) {
+  cout << ip_address_.to_string() << " / " << to_string(ethernet_address_) << " send datagram to ";
+  cout << Address::from_ipv4_numeric(ip_address_t).to_string() << " " << to_string(mac_address) << "---\n";
+  cout << buffer_.count( ip_address_t ) << "\n";
+  if( !buffer_.count( ip_address_t ) )
     return;
-  while ( !buffer_[ip_address].empty() ) {
-    send_data_msg( buffer_[ip_address].front(), mac_address );
-    buffer_[ip_address].pop();
+  while ( !buffer_[ip_address_t].empty() ) {
+    send_data_msg( buffer_[ip_address_t].front(), mac_address );
+    buffer_[ip_address_t].pop();
   }
 }
 
