@@ -72,6 +72,8 @@ add_custom_target (check5 COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure --s
 
 add_custom_target (check6 COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure --stop-on-failure --timeout 12 -R '^router')
 
+add_custom_target (checkAll COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure --stop-on-failure --timeout 12 -R 'webget|^byte_stream_|^reassembler_|^recv|^send|^net_interface|^router')
+
 ###
 
 add_custom_target (speed COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure --timeout 12 -R '_speed_test')

@@ -108,7 +108,6 @@ void NetworkInterface::send_data_msg( const InternetDatagram& dgram, EthernetAdd
     .header = header,
     .payload = serialize( dgram )
   };
-  cout << "------------------\n";
   transmit( frame );
 }
 
@@ -150,9 +149,6 @@ ARPMessage NetworkInterface::build_ARP_msg( uint16_t opcode, uint32_t ori_ip, Et
 }
 
 void NetworkInterface::send_buf_datagram( uint32_t ip_address_t, EthernetAddress mac_address ) {
-  cout << ip_address_.to_string() << " / " << to_string(ethernet_address_) << " send datagram to ";
-  cout << Address::from_ipv4_numeric(ip_address_t).to_string() << " " << to_string(mac_address) << "---\n";
-  cout << buffer_.count( ip_address_t ) << "\n";
   if( !buffer_.count( ip_address_t ) )
     return;
   while ( !buffer_[ip_address_t].empty() ) {
