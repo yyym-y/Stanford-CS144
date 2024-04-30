@@ -222,13 +222,13 @@ public:
 
   void simulate()
   {
-    // for ( unsigned int i = 0; i < 256; i++ ) {
+    for ( unsigned int i = 0; i < 256; i++ ) {
       _router.route();
-    // }
+    }
 
-    // for ( auto& host : _hosts ) {
-    //   host.second.check();
-    // }
+    for ( auto& host : _hosts ) {
+      host.second.check();
+    }
   }
 
   Host& host( const string& name )
@@ -263,71 +263,71 @@ void network_simulator()
     network.simulate();
   }
 
-  // cout << green << "\n\nTesting traffic between two ordinary hosts (cherrypie to applesauce)..." << normal
-  //      << "\n\n";
-  // {
-  //   auto dgram_sent = network.host( "cherrypie" ).send_to( network.host( "applesauce" ).address() );
-  //   dgram_sent.header.ttl--;
-  //   dgram_sent.header.compute_checksum();
-  //   network.host( "applesauce" ).expect( dgram_sent );
-  //   network.simulate();
-  // }
+  cout << green << "\n\nTesting traffic between two ordinary hosts (cherrypie to applesauce)..." << normal
+       << "\n\n";
+  {
+    auto dgram_sent = network.host( "cherrypie" ).send_to( network.host( "applesauce" ).address() );
+    dgram_sent.header.ttl--;
+    dgram_sent.header.compute_checksum();
+    network.host( "applesauce" ).expect( dgram_sent );
+    network.simulate();
+  }
 
-  // cout << green << "\n\nSuccess! Testing applesauce sending to the Internet." << normal << "\n\n";
-  // {
-  //   auto dgram_sent = network.host( "applesauce" ).send_to( Address { "1.2.3.4" } );
-  //   dgram_sent.header.ttl--;
-  //   dgram_sent.header.compute_checksum();
-  //   network.host( "default_router" ).expect( dgram_sent );
-  //   network.simulate();
-  // }
+  cout << green << "\n\nSuccess! Testing applesauce sending to the Internet." << normal << "\n\n";
+  {
+    auto dgram_sent = network.host( "applesauce" ).send_to( Address { "1.2.3.4" } );
+    dgram_sent.header.ttl--;
+    dgram_sent.header.compute_checksum();
+    network.host( "default_router" ).expect( dgram_sent );
+    network.simulate();
+  }
 
-  // cout << green << "\n\nSuccess! Testing sending to the HS network and Internet." << normal << "\n\n";
-  // {
-  //   auto dgram_sent = network.host( "applesauce" ).send_to( Address { "143.195.131.17" } );
-  //   dgram_sent.header.ttl--;
-  //   dgram_sent.header.compute_checksum();
-  //   network.host( "hs_router" ).expect( dgram_sent );
-  //   network.simulate();
+  cout << green << "\n\nSuccess! Testing sending to the HS network and Internet." << normal << "\n\n";
+  {
+    auto dgram_sent = network.host( "applesauce" ).send_to( Address { "143.195.131.17" } );
+    dgram_sent.header.ttl--;
+    dgram_sent.header.compute_checksum();
+    network.host( "hs_router" ).expect( dgram_sent );
+    network.simulate();
 
-  //   dgram_sent = network.host( "cherrypie" ).send_to( Address { "143.195.193.52" } );
-  //   dgram_sent.header.ttl--;
-  //   dgram_sent.header.compute_checksum();
-  //   network.host( "hs_router" ).expect( dgram_sent );
-  //   network.simulate();
+    dgram_sent = network.host( "cherrypie" ).send_to( Address { "143.195.193.52" } );
+    dgram_sent.header.ttl--;
+    dgram_sent.header.compute_checksum();
+    network.host( "hs_router" ).expect( dgram_sent );
+    network.simulate();
 
-  //   dgram_sent = network.host( "cherrypie" ).send_to( Address { "143.195.223.255" } );
-  //   dgram_sent.header.ttl--;
-  //   dgram_sent.header.compute_checksum();
-  //   network.host( "hs_router" ).expect( dgram_sent );
-  //   network.simulate();
+    dgram_sent = network.host( "cherrypie" ).send_to( Address { "143.195.223.255" } );
+    dgram_sent.header.ttl--;
+    dgram_sent.header.compute_checksum();
+    network.host( "hs_router" ).expect( dgram_sent );
+    network.simulate();
 
-  //   dgram_sent = network.host( "cherrypie" ).send_to( Address { "143.195.224.0" } );
-  //   dgram_sent.header.ttl--;
-  //   dgram_sent.header.compute_checksum();
-  //   network.host( "default_router" ).expect( dgram_sent );
-  //   network.simulate();
-  // }
+    dgram_sent = network.host( "cherrypie" ).send_to( Address { "143.195.224.0" } );
+    dgram_sent.header.ttl--;
+    dgram_sent.header.compute_checksum();
+    network.host( "default_router" ).expect( dgram_sent );
+    network.simulate();
+  }
 
-  // cout << green << "\n\nSuccess! Testing two hosts on the same network (dm42 to dm43)..." << normal << "\n\n";
-  // {
-  //   auto dgram_sent = network.host( "dm42" ).send_to( network.host( "dm43" ).address() );
-  //   dgram_sent.header.ttl--;
-  //   dgram_sent.header.compute_checksum();
-  //   network.host( "dm43" ).expect( dgram_sent );
-  //   network.simulate();
-  // }
+  cout << green << "\n\nSuccess! Testing two hosts on the same network (dm42 to dm43)..." << normal << "\n\n";
+  {
+    auto dgram_sent = network.host( "dm42" ).send_to( network.host( "dm43" ).address() );
+    dgram_sent.header.ttl--;
+    dgram_sent.header.compute_checksum();
+    network.host( "dm43" ).expect( dgram_sent );
+    network.simulate();
+  }
 
-  // cout << green << "\n\nSuccess! Testing TTL expiration..." << normal << "\n\n";
-  // {
-  //   auto dgram_sent = network.host( "applesauce" ).send_to( Address { "1.2.3.4" }, 1 );
-  //   network.simulate();
+  cout << green << "\n\nSuccess! Testing TTL expiration..." << normal << "\n\n";
+  {
+    auto dgram_sent = network.host( "applesauce" ).send_to( Address { "1.2.3.4" }, 1 );
+    network.simulate();
 
-  //   dgram_sent = network.host( "applesauce" ).send_to( Address { "1.2.3.4" }, 0 );
-  //   network.simulate();
-  // }
+    dgram_sent = network.host( "applesauce" ).send_to( Address { "1.2.3.4" }, 0 );
+    network.simulate();
+  }
 
-  // cout << "\n\n\033[32;1mCongratulations! All datagrams were routed successfully.\033[m\n";
+  cout << "\n\n\033[32;1mCongratulations! All datagrams were routed successfully.\033[m\n";
 }
 
 int main()
